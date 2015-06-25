@@ -4,7 +4,12 @@ defmodule Log do
   defmacro warn(msg),      do: quote do: Logger.log(:warn, unquote(msg))
   defmacro error(msg),     do: quote do: Logger.log(:error, unquote(msg))
 
-  defmacro metadata(meta), do: quote do: Process.put(:log_meta, unquote(meta))
+  defmacro metadata(meta) do 
+    quote do
+      merged = Process.get(:log_meta) || %{} |> Map.merge(unquote(meta))      
+      Process.put(:log_meta, merged)
+    end
+  end
 
   defmacro debug(msg) do
     %{module: module, function: fun, line: line} = __CALLER__
