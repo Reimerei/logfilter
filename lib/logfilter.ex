@@ -6,8 +6,8 @@ defmodule Log do
 
   defmacro metadata(meta) do 
     quote do
-      merged = Process.get(:log_meta) || %{} |> Map.merge(unquote(meta))      
-      Process.put(:log_meta, merged)
+      old_meta = Process.get(:log_meta) || %{}      
+      Process.put(:log_meta, Map.merge(old_meta, unquote(meta)))
     end
   end
 
