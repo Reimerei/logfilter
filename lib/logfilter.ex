@@ -30,6 +30,11 @@ defmodule Log do
 
   defp form_fa(nil), do: nil
 
+  def debug(data, label) do
+    Log.debug(label <> ": #{inspect data}")
+    data
+  end
+
   def set_filters(caller, metadata) do
     set_filters([{caller, metadata}])
   end
