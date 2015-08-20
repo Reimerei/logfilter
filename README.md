@@ -21,3 +21,21 @@ By default debug messages will not be shown. To enable them define filters using
 ```
 Log.set_filter(caller, metadata)
 ```
+
+Debugging pipes
+===============
+
+```elixir
+[1,2,3]
+|> Enum.map(&(&1 * 2))
+|> Log.debug("double")
+|> Enum.map(&(&1 * 2))
+```
+
+this will output the message
+
+```
+09:32:25.663 [debug] double: [2, 4, 6] |
+```
+
+while leaving the stream intact and returning `[4, 8, 12]`.
