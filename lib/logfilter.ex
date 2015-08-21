@@ -4,9 +4,9 @@ defmodule Log do
   defmacro warn(msg),      do: quote do: Logger.log(:warn, unquote(msg))
   defmacro error(msg),     do: quote do: Logger.log(:error, unquote(msg))
 
-  defmacro metadata(meta) do 
+  defmacro metadata(meta) do
     quote do
-      old_meta = Process.get(:log_meta) || %{}      
+      old_meta = Process.get(:log_meta) || %{}
       Process.put(:log_meta, Map.merge(old_meta, unquote(meta)))
     end
   end
@@ -39,17 +39,21 @@ defmodule Log do
     set_filters([{caller, metadata}])
   end
 
-  def set_filters(filters \\ []) do 
+  def set_filters() do
+    default_filters = Application.get_env(:logfilter, :default) || []
+    set_filters(default_filters)
+  end
 
+  def set_filters(filters) do
     create_filter_def = fn({caller, metadata}) -> "def filter(" <> inspect(caller) <> "," <> inspect(metadata) <> "), do: true" end
-    
-    filter_defs = 
+
+    filter_defs =
       filters
       |> Enum.map(create_filter_def)
       |> Enum.join("\n")
 
-    module_def = 
-      "defmodule LogFilter do\n"  
+    module_def =
+      "defmodule LogFilter do\n"
       <> filter_defs <> "\n"
       <> "  def filter(_, _), do: false\n"
       <> "end"
