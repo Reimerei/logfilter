@@ -48,6 +48,10 @@ defmodule Log do
     set_filters([]) 
   end
 
+  def log_all do
+    set_filters([%{},%{}])
+  end
+
   def set_filters(filters) do
     create_filter_def = fn({caller, metadata}) -> "def filter(" <> inspect(caller) <> "," <> inspect(metadata) <> "), do: true" end
 
