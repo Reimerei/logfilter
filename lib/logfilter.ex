@@ -45,11 +45,11 @@ defmodule Log do
   end
 
   def disable_filters() do
-    set_filters([]) 
+    set_filters([])
   end
 
   def log_all do
-    set_filters([%{},%{}])
+    set_filters([{%{},%{}}])
   end
 
   def set_filters(filters) do
