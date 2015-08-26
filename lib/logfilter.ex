@@ -39,7 +39,7 @@ defmodule Log do
     set_filters([{caller, metadata}])
   end
 
-  def set_filters() do
+  def log_default() do
     default_filters = Application.get_env(:logfilter, :default) || []
     set_filters(default_filters)
   end
