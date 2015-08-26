@@ -44,7 +44,7 @@ defmodule Log do
     set_filters(default_filters)
   end
 
-  def disable_filters() do
+  def log_none() do
     set_filters([])
   end
 
