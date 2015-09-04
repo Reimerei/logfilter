@@ -17,11 +17,21 @@ defmodule Log do
       caller = %{module: unquote(module), function: unquote(form_fa(fun)), line: unquote(line)}
       metadata = Process.get(:log_meta) || %{}
       if LogFilter.filter(caller, metadata) do
-        meta_string = Enum.reduce(metadata, "", fn({key, value}, acc) -> acc <> " " <> to_string(key) <> "=" <> to_string(value) end)
-        msg_with_meta = unquote(msg) <> " |" <> meta_string
+        msg_string    = Log.msg_to_string(unquote(msg))
+        meta_string   = Enum.reduce(metadata, "", fn({key, value}, acc) -> acc <> " " <> to_string(key) <> "=" <> to_string(value) end)
+        msg_with_meta = msg_string <> " |" <> meta_string
         Logger.log(:debug, msg_with_meta)
       end
     end
+  end
+
+  def msg_to_string(msg) when is_function(msg) do
+    msg.()
+  end
+
+  # we assume msg is a binary of iolist
+  def msq_to_string(msg) do
+    msg
   end
 
   defp form_fa({name, arity}) do
@@ -53,7 +63,7 @@ defmodule Log do
   end
 
   def set_filters(filters) do
-    create_filter_def = fn({caller, metadata}) -> "def filter(" <> inspect(caller) <> "," <> inspect(metadata) <> "), do: true" end
+    create_filter_def = fn({caller, metadata}) -> "def filter(" <> inspect(caller) <> "," <> inspect(metadata) <> "), do:  Logger.level == :debug" end
 
     filter_defs =
       filters
