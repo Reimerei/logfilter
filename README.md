@@ -39,3 +39,15 @@ this will output the message
 ```
 
 while leaving the stream intact and returning `[4, 8, 12]`.
+
+Debugging with funs
+===============
+
+Sometimes computing the massage might be expensive and you only want to do it
+if it is actually shown:
+
+```elixir
+generate_message = fn() -> "I did something really complex" end
+Log.debug(generate_message)
+08:56:04.380 [debug] I did something really complex |
+```
