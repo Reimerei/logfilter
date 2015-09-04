@@ -30,7 +30,7 @@ defmodule Log do
   end
 
   # we assume msg is a binary of iolist
-  def msq_to_string(msg) do
+  def msg_to_string(msg) do
     msg
   end
 
