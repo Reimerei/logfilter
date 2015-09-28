@@ -20,8 +20,17 @@ defmodule Log do
         msg_string    = Log.msg_to_string(unquote(msg))
         meta_string   = Enum.reduce(metadata, "", fn({key, value}, acc) -> acc <> " " <> to_string(key) <> "=" <> to_string(value) end)
         msg_with_meta = msg_string <> " |" <> meta_string
-        Logger.log(:debug, msg_with_meta)
+        do_log(msg_with_meta)
       end
+    end
+  end
+
+  defmacro do_log(msg) do
+    # the Logger API has changed in v1.1.0, detect which version we are running
+    %{version: elixir_version} = System.build_info()
+    case Version.compare(elixir_version, "1.1.0") do
+      :lt   -> quote do: Logger.log(:debug, unquote(msg))
+      _     -> quote do: Logger.bare_log(:debug, unquote(msg))
     end
   end
 
@@ -41,7 +50,7 @@ defmodule Log do
   defp form_fa(nil), do: nil
 
   def debug(data, label) do
-    Log.debug(label <> ": #{inspect data}")
+    debug(label <> ": #{inspect data}")
     data
   end
 
