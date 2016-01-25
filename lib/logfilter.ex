@@ -90,5 +90,5 @@ defmodule Log do
 end
 
 defmodule LogFilter do
-  def filter(_,_), do: false
+  def filter(_,_), do: true
 end
