@@ -19,7 +19,7 @@ defmodule Log do
       if LogFilter.filter(caller, metadata) do
         msg_string    = Log.msg_to_string(unquote(msg))
         msg_with_meta = 
-          if map_size(metadata_== 0) do
+          if map_size(metadata) == 0 do
             msg_string
           else
             meta_string = Enum.reduce(metadata, "", fn({key, value}, acc) -> "#{acc} #{to_string(key)}=#{to_string(value)}" end)
