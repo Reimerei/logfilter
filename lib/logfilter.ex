@@ -1,8 +1,8 @@
 defmodule Log do
 
-  defmacro info(msg),      do: quote do: unquote(log_fun()).(:info, unquote(msg))
-  defmacro warn(msg),      do: quote do: unquote(log_fun()).(:warn, unquote(msg))
-  defmacro error(msg),     do: quote do: unquote(log_fun()).(:error, unquote(msg))
+  defmacro info(msg),      do: quote do: Logger.bare_log(:info, unquote(msg))
+  defmacro warn(msg),      do: quote do: Logger.bare_log(:warn, unquote(msg))
+  defmacro error(msg),     do: quote do: Logger.bare_log(:error, unquote(msg))
 
   defmacro metadata(meta) do
     quote do
@@ -25,17 +25,8 @@ defmodule Log do
             meta_string = Enum.reduce(metadata, "", fn({key, value}, acc) -> "#{acc} #{to_string(key)}=#{to_string(value)}" end)
             msg_string <> " |" <> meta_string
           end
-        unquote(log_fun).(:debug, msg_with_meta)
+        Logger.bare_log(:debug, msg_with_meta)
       end
-    end
-  end
-
-  def log_fun() do
-    # the Logger API has changed in v1.1.0, detect which version we are running and use the corresponing function
-    %{version: elixir_version} = System.build_info()
-    case Version.compare(elixir_version, "1.1.0") do
-      :lt   -> quote do: &Logger.log/2
-      _     -> quote do: &Logger.bare_log/2
     end
   end
 

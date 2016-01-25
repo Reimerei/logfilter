@@ -4,7 +4,7 @@ defmodule Logfilter.Mixfile do
   def project do
     [app: :logfilter,
      version: "0.1.0",
-     elixir: "~> 1.0",     
+     elixir: "~> 1.1",     
      deps: deps]
   end
 
