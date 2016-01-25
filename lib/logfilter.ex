@@ -18,8 +18,13 @@ defmodule Log do
       metadata = Process.get(:log_meta) || %{}
       if LogFilter.filter(caller, metadata) do
         msg_string    = Log.msg_to_string(unquote(msg))
-        meta_string   = Enum.reduce(metadata, "", fn({key, value}, acc) -> acc <> " " <> to_string(key) <> "=" <> to_string(value) end)
-        msg_with_meta = msg_string <> " |" <> meta_string
+        msg_with_meta = 
+          if map_size(metadata_== 0) do
+            msg_string
+          else
+            meta_string = Enum.reduce(metadata, "", fn({key, value}, acc) -> "#{acc} #{to_string(key)}=#{to_string(value)}" end)
+            msg_string <> " |" <> meta_string
+          end
         unquote(log_fun).(:debug, msg_with_meta)
       end
     end
@@ -34,11 +39,12 @@ defmodule Log do
     end
   end
 
+  # if the msg is a function execute it, to get the message
   def msg_to_string(msg) when is_function(msg) do
     msg.()
   end
 
-  # we assume msg is a binary of iolist
+  # we assume msg is a binary or iolist
   def msg_to_string(msg) do
     msg
   end
@@ -48,11 +54,6 @@ defmodule Log do
   end
 
   defp form_fa(nil), do: nil
-
-  # def debug(data, label) do
-  #   debug(label <> ": #{inspect data}")
-  #   data
-  # end
 
   def set_filters(caller, metadata) do
     set_filters([{caller, metadata}])
