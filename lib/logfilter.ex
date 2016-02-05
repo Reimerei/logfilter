@@ -76,6 +76,8 @@ defmodule Log do
       <> filter_defs <> "\n"
       <> "  def filter(_, _), do: false\n"
       <> "end"
+
+    Code.compiler_options(ignore_module_conflict: true)
     Code.compile_string(module_def)
     :ok
   end
